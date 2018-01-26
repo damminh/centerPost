@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateKeyTable extends Migration
+class CreateRequestsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class CreateKeyTable extends Migration
      */
     public function up()
     {
-        Schema::create('key', function (Blueprint $table) {
+        Schema::create('requests', function (Blueprint $table) {
             $table->increments('id');
+            $table->tinyInteger('member_id');
+            $table->tinyInteger('user_id');
             $table->string('name');
             $table->text('description')->nullable();
             $table->timestamps();
@@ -28,6 +30,6 @@ class CreateKeyTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('key');
+        Schema::dropIfExists('requests');
     }
 }

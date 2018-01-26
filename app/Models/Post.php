@@ -15,8 +15,11 @@ class Post extends Model
         return $this->belongsTo('App\Models\Member', 'member_id');
     }
 
-    public function key() {
-        return $this->belongsTo('App\Models\Key', 'key_id');
+    public function request() {
+        return $this->belongsTo('App\Models\Request', 'request_id');
     }
 
+    public function histories() {
+        return $this->hasMany('App\Models\HistoryPost', 'post_id');
+    }
 }
