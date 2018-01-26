@@ -14,5 +14,9 @@ class Post extends Model
     public function member() {
         return $this->belongsTo('App\Models\Member', 'member_id');
     }
-    
+
+    public function key() {
+        return $this->belongsTo('App\Models\Key', 'key_id');
+    }
+
 }
