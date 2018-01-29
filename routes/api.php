@@ -15,20 +15,29 @@ use Illuminate\Http\Request;
 
 //user
 Route::group([
-    'namespace' => 'users'
+    'namespace' => 'users',
+    'prefix' => 'users'
 ], function() {
     Route::post('login', 'AuthController@login');
     Route::group(['middleware' => 'api.web:1'], function () {
-
+        Route::resource('members', 'MemberController', ['only' => ['index', 'store', 'update', 'destroy']]);
+        Route::resource('groups', 'GroupController', ['only' => ['index', 'store', 'update', 'destroy']]);
+        Route::resource('domains', 'DomainController', ['only' => ['index', 'store', 'update', 'destroy']]);
+        Route::resource('posts', 'PostController', ['only' => ['index', 'store', 'update', 'destroy']]);
+        Route::resource('requirements', 'RequirementController', ['only' => ['index', 'store', 'update', 'destroy']]);
     });
 });
 
 //member
 Route::group([
-    'namespace' => 'members'
+    'namespace' => 'members',
+    'prefix' => 'members'
 ], function() {
     Route::post('login', 'AuthController@login');
     Route::group(['middleware' => 'api.web:2'], function () {
-
+        Route::resource('posts', 'PostController', ['only' => ['index', 'store', 'udpate', 'destroy']]);
+        Route::get('requirements', 'RequirementController@index');
     });
 });
+
+Route::get('tests', 'TestController@index');

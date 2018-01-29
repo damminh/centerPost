@@ -17,11 +17,12 @@ class CreatePostsTable extends Migration
             $table->increments('id');
             $table->tinyInteger('member_id');
             $table->tinyInteger('user_id');
-            $table->tinyInteger('request_id');
+            $table->integer('requirement_id');
+            $table->integer('domain_id');
             $table->string('content');
             $table->string('name');
             $table->text('description')->nullable();
-            $table->tinyInteger('status');
+            $table->tinyInteger('is_main');
             $table->timestamps();
             $table->softDeletes();
         });

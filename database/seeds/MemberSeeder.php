@@ -15,8 +15,10 @@ class MembersTableSeeder extends Seeder
         $member->name = 'member';
         $member->username = 'member';
         $member->password = \Illuminate\Support\Facades\Hash::make('123456a@');
+        $member->phone = '01674139029';
+        $member->user_id = 1;
         $member->description = null;
-        $member->api_token = str_random(128);
+        $member->token = str_random(128);
         $member->save();
     }
 }

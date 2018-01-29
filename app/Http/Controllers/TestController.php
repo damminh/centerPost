@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\users;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
-class LanguageController extends Controller
+class TestController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return response()->json(['message' => 'success'], 200);   
     }
 
     /**

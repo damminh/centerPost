@@ -1,11 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\users;
+namespace App\Http\Controllers\members;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Requirement;
+use App\Utils\BasicAuth;
+use Illuminate\Support\Facades\Log;
 
-class FontWordController extends Controller
+class RequirementController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +17,20 @@ class FontWordController extends Controller
      */
     public function index()
     {
-        //
+        $member = BasicAuth::getInstance()->getModel();
+        $limit = $request->input('limit', null);
+        $search_text = $request->input('search', null);
+        $query = Requirement::where('member_id', $member->id)
+            ->when($search_text, function ($q) use ($search_text) {
+                return $q->where('name', 'like', '%' . $search_text . '%')
+                    ->orWhere('name', 'like', '%' . $search_text . '%');
+            });
+        if ($limit) {
+            $data = $query->paginate($limit);
+        } else {
+            $data = $query->get();
+        }
+        return response()->json($data, 200);
     }
 
     /**
@@ -35,7 +51,7 @@ class FontWordController extends Controller
      */
     public function store(Request $request)
     {
-        //
+       
     }
 
     /**

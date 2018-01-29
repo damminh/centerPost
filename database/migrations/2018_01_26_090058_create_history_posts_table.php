@@ -15,6 +15,8 @@ class CreateHistoryPostsTable extends Migration
     {
         Schema::create('history_posts', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('post_id');
+            $table->integer('content_old');
             $table->timestamps();
         });
     }

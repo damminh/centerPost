@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Request extends Model
+class Requirement extends Model
 {
     use SoftDeletes;
     protected $dates = ['deleted_at'];
@@ -16,6 +16,6 @@ class Request extends Model
     }
 
     public function posts() {
-        return $this->hasMany('App\Models\Post', 'request_id');
+        return $this->hasMany('App\Models\Post', 'requirement_id');
     }
 }

@@ -18,6 +18,7 @@ class CreateMembersTable extends Migration
             $table->tinyInteger('user_id');
             $table->string('name');
             $table->string('username')->unique();
+            $table->string('phone');
             $table->string('password');
             $table->string('token');
             $table->text('description')->nullable();

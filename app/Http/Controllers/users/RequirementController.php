@@ -4,11 +4,12 @@ namespace App\Http\Controllers\users;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Domain;
+use App\Models\Requirement;
 use App\Utils\BasicAuth;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
-class DomainController extends Controller
+class RequirementController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,7 +21,7 @@ class DomainController extends Controller
         $user = BasicAuth::getInstance()->getModel();
         $limit = $request->input('limit', null);
         $search_text = $request->input('search', null);
-        $query = Domain::where('user_id', $user->id)
+        $query = Requirement::where('user_id', $user->id)
             ->when($search_text, function ($q) use ($search_text) {
                 return $q->where('name', 'like', '%' . $search_text . '%');
             });
@@ -52,14 +53,18 @@ class DomainController extends Controller
     {
         try {
             $user = BasicAuth::getInstance()->getModel();
-            $ob = new Domain();
+            $ob = new Requirement();
             $ob->user_id = $user->id;
-            $ob->type_id = $request->input('type_id');
-            $ob->group_id = $request->input('group_id');
-            $ob->url = $request->input('url');
-            $ob->username = $request->input('username');
-            $ob->password = $request->input('password');
-            $ob->description = $request->input('description', null);
+            $ob->member_id = $request->input('member_id');
+            $ob->name = $request->input('name');
+            $ob->start_date = new Carbon($request->input('start_date'));
+            $ob->end_date = new Carbon($request->input('end_date'));
+            $ob->priority = $request->input('priority');
+            $type = $request->input('type');
+            $ob->type = $type;
+            if((int)$type == 1) {
+                $ob->time_repeat = $request->input('time_repeat');
+            }
             $ob->save();
             return response()->json($ob, 200);
         } catch(\Exception $e) {
@@ -100,13 +105,18 @@ class DomainController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $ob = Domain::find($id);
-            $ob->type_id = $request->input('type_id');
-            $ob->group_id = $request->input('group_id');
-            $ob->url = $request->input('url');
-            $ob->username = $request->input('username');
-            $ob->password = $request->input('password');
-            $ob->description = $request->input('description', null);
+            $user = BasicAuth::getInstance()->getModel();
+            $ob = Requirement::find($id);
+            $ob->member_id = $request->input('member_id');
+            $ob->name = $request->input('name');
+            $ob->start_date = new Carbon($request->input('start_date'));
+            $ob->end_date = new Carbon($request->input('end_date'));
+            $ob->priority = $request->input('priority');
+            $type = $request->input('type');
+            $ob->type = $type;
+            if((int)$type == 1) {
+                $ob->time_repeat = $request->input('time_repeat');
+            }
             $ob->save();
             return response()->json($ob, 200);
         } catch(\Exception $e) {
@@ -124,7 +134,7 @@ class DomainController extends Controller
     public function destroy($id)
     {
         try {
-            $ob = Domain::find($id);
+            $ob = Requirement::find($id);
             $ob->delete();
             return response()->json($ob, 200);
         } catch(\Exception $e) {
