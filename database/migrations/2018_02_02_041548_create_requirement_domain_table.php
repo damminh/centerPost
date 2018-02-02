@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRequirementDomainsTable extends Migration
+class CreateRequirementDomainTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateRequirementDomainsTable extends Migration
      */
     public function up()
     {
-        Schema::create('requirement_domains', function (Blueprint $table) {
+        Schema::create('requirement_domain', function (Blueprint $table) {
             $table->integer('requirement_id');
             $table->integer('domain_id');
         });
@@ -26,6 +26,6 @@ class CreateRequirementDomainsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('requirement_domains');
+        Schema::dropIfExists('requirement_domain');
     }
 }

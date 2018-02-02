@@ -29,15 +29,16 @@ class TestController extends Controller
 
         $curl_ = new Curl();
         $curl_->setHeader('Content-Type', 'application/json');
-        // $curl_->setHeader('Authorization', 'Bearer '.$data->token);
+        $curl_->setHeader('Authorization', 'Bearer '.$data->token);
         $data_ = $curl_->post('http://localhost/test_wordpress/wp-json/wp/v2/posts', array(
             "title" => "test post from laravel",
             "status" => "publish",
             "categories" => "10"
         ));
-        $data_end = json_decode($data_);
-        if($data_end['id'])
-        return response()->json($data_, 200);
+        return response()->json([
+            'error' => $curl_->error,
+            'reponse' => $curl_->response
+        ], 200);
     }
 
     

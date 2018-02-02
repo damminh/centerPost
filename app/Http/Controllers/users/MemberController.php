@@ -31,6 +31,9 @@ class MemberController extends Controller
         } else {
             $data = $query->get();
         }
+        foreach($data as $item) {
+            $item['itemName'] = $item['name'];
+        }
         return response()->json($data, 200);
     }
 
@@ -59,7 +62,7 @@ class MemberController extends Controller
             $member = new Member();
             $member->username = $request->input('username');
             $member->user_id = $user->id;
-            $member->password = Hash::make('123456a@');
+            $member->password = Hash::make($request->input('password'));
             $member->name = $request->input('name');
             $member->phone = $request->input('phone');
             $member->description = $request->input('description', null);

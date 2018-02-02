@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRequirementUsersTable extends Migration
+class CreateRequirementMemberTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateRequirementUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('requirement_members', function (Blueprint $table) {
+        Schema::create('requirement_member', function (Blueprint $table) {
             $table->integer('requirement_id');
             $table->integer('member_id');
         });
@@ -26,6 +26,6 @@ class CreateRequirementUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('requirement_members');
+        Schema::dropIfExists('requirement_member');
     }
 }

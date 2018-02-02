@@ -95,15 +95,30 @@ class PostController extends Controller
                         "categories" => $category_id,
                         "status" => "publish"
                     ));
-                    $ob->post_website_id = $data->id;
-                    $ob->link = $data->link;
-                    $ob->save();
+                    //post error or not
+                    if($curl_->error) {
+                        return response()->json([
+                            'message' => 'error form website'
+                        ], 500);
+                    }
+                    else {
+                        $ob->post_website_id = $data->id;
+                        $ob->link = $data->link;
+                        $ob->save();
+                        return response()->json([
+                            'message' => 'success',
+                            'data' => $ob
+                        ], 200);
+                    }
                 }
             }
             else if((int)$is_main == 0) {
                 $ob->save();
+                return response()->json([
+                    'message' => 'success',
+                    'data' => $ob
+                ], 200);
             }
-            return response()->json($ob, 200);
         }
         catch (\Exception $e) {
             Log::error($e);
@@ -184,16 +199,29 @@ class PostController extends Controller
                         "categories" => $category_id,
                         "status" => "publish"
                     ));
-                    
-                    $ob_history->save();
-                    $ob->link = $data->link;
-                    $ob->save();
+                    if($curl_->error) {
+                        return response()->json([
+                            'message' => 'error from website'
+                        ], 500);
+                    }
+                    else {
+                        $ob_history->save();
+                        $ob->link = $data->link;
+                        $ob->save();
+                        return response()->json([
+                            'message' => 'success',
+                            'data' => $ob
+                        ], 200);
+                    }
                 }
             }
             else if((int)$ob['is_main'] == 0) {
                 $ob->save();
+                return response()->json([
+                    'message' => 'success',
+                    'data' => $ob
+                ], 200);
             }
-            return response()->json($ob, 200);
         }
         catch (\Exception $e) {
             Log::error($e);
@@ -225,12 +253,23 @@ class PostController extends Controller
             $curl_->setHeader('Authorization', 'Bearer '.$data_token->token);
             $data = $curl_->delete($ob_domain['url'].'/wp-json/wp/v2/posts/'.$ob_domain['post_website_id']);
             
-            $ob_history = HistoryPost::where("post_id", $ob['id'])->get();
-            foreach($ob_history as $item) {
-                $ob_history_delete = HistoryPost::find($item['id']);
-                $ob_history_delete->delete();
+            if($curl_->error) {
+                return response()->json([
+                    'message' => 'error from website'
+                ], 500);
             }
-            $ob->delete();
+            else {
+                $ob_history = HistoryPost::where("post_id", $ob['id'])->get();
+                foreach($ob_history as $item) {
+                    $ob_history_delete = HistoryPost::find($item['id']);
+                    $ob_history_delete->delete();
+                }
+                $ob->delete();
+                return response()->json([
+                    'message' => 'success',
+                    'data' => $ob
+                ], 200);
+            }
         }
     }
 }
