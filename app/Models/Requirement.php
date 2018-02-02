@@ -11,11 +11,15 @@ class Requirement extends Model
     protected $dates = ['deleted_at'];
     protected $hidden = ['deleted_at'];
 
-    public function member() {
-        return $this->belongsTo('App\Models\Member', 'member_id');
+    public function members() {
+        return $this->belongsToMany('App\Models\Member', 'requirement_member', 'requirement_id', 'member_id');
     }
 
     public function posts() {
         return $this->hasMany('App\Models\Post', 'requirement_id');
+    }
+
+    public function domains() {
+        return $this->belongsToMany('App\Models\Domain', 'requirement_domain', 'requirement_id', 'domain_id');
     }
 }

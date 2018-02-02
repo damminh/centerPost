@@ -15,18 +15,17 @@ class CreateRequirementsTable extends Migration
     {
         Schema::create('requirements', function (Blueprint $table) {
             $table->increments('id');
-            $table->tinyInteger('member_id');
             $table->tinyInteger('user_id');
-            $table->integer('domain_id');
             $table->string('name');
             $table->dateTime('start_date');
             $table->dateTime('end_date');
             $table->integer('time_repeat')->nullable();
-            //type is repeat or not
+            //type: 1 is repeat or not
             $table->tinyInteger('type');
             $table->tinyInteger('priority');
             $table->text('description')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

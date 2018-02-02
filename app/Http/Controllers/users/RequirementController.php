@@ -60,12 +60,18 @@ class RequirementController extends Controller
             $ob->start_date = new Carbon($request->input('start_date'));
             $ob->end_date = new Carbon($request->input('end_date'));
             $ob->priority = $request->input('priority');
-            $type = $request->input('type');
-            $ob->type = $type;
-            if((int)$type == 1) {
-                $ob->time_repeat = $request->input('time_repeat');
-            }
+            $ob->type = $request->input('type');
+            $ob->time_repeat = $request->input('time_repeat', null);
+            $ob->description = $request->input('description', null);
+            $list_member = $request->input('list_member');
+            $list_domain = $request->input('list_domain');
             $ob->save();
+            foreach($list_member as $item) {
+                $ob->members()->attach($item['id']);                
+            }
+            foreach($list_domain as $item) {
+                $ob->domains()->attach($item['id']);
+            }
             return response()->json($ob, 200);
         } catch(\Exception $e) {
             Log::error($e);
@@ -112,12 +118,20 @@ class RequirementController extends Controller
             $ob->start_date = new Carbon($request->input('start_date'));
             $ob->end_date = new Carbon($request->input('end_date'));
             $ob->priority = $request->input('priority');
-            $type = $request->input('type');
-            $ob->type = $type;
-            if((int)$type == 1) {
-                $ob->time_repeat = $request->input('time_repeat');
-            }
+            $ob->type = $request->input('type');
+            $ob->time_repeat = $request->input('time_repeat', null);
+            $ob->description = $request->input('description', null);
             $ob->save();
+            $list_member = $request->input('list_member');
+            $list_domain = $request->input('list_domain');
+            $ob->members()->detach();
+            $ob->domains()->detach();
+            foreach($list_member as $item) {
+                $ob->members()->attach($item['id']);
+            }
+            foreach($list_domain as $item) {
+                $ob->domains()->attach($item['id']);
+            }
             return response()->json($ob, 200);
         } catch(\Exception $e) {
             Log::error($e);
@@ -135,6 +149,8 @@ class RequirementController extends Controller
     {
         try {
             $ob = Requirement::find($id);
+            $ob->members()->detach();
+            $ob->domains()->detach();
             $ob->delete();
             return response()->json($ob, 200);
         } catch(\Exception $e) {

@@ -17,7 +17,6 @@ class CreateDomainsTable extends Migration
             $table->increments('id');
             $table->tinyInteger('user_id');
             $table->tinyInteger('type_id');
-            $table->tinyInteger('group_id');
             $table->string('username');
             $table->string('password');
             $table->string('url');

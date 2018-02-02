@@ -21,22 +21,24 @@ Route::group([
     Route::post('login', 'AuthController@login');
     Route::group(['middleware' => 'api.web:1'], function () {
         Route::resource('members', 'MemberController', ['only' => ['index', 'store', 'update', 'destroy']]);
-        Route::resource('groups', 'GroupController', ['only' => ['index', 'store', 'update', 'destroy']]);
+        // Route::resource('groups', 'GroupController', ['only' => ['index', 'store', 'update', 'destroy']]);
         Route::resource('domains', 'DomainController', ['only' => ['index', 'store', 'update', 'destroy']]);
         Route::resource('posts', 'PostController', ['only' => ['index', 'store', 'update', 'destroy']]);
         Route::resource('requirements', 'RequirementController', ['only' => ['index', 'store', 'update', 'destroy']]);
+        Route::get('types', 'TypeController@index');
     });
 });
 
 //member
-Route::group([
+Route::group([ 
     'namespace' => 'members',
     'prefix' => 'members'
 ], function() {
     Route::post('login', 'AuthController@login');
     Route::group(['middleware' => 'api.web:2'], function () {
-        Route::resource('posts', 'PostController', ['only' => ['index', 'store', 'udpate', 'destroy']]);
+        Route::resource('posts', 'PostController', ['only' => ['index', 'store', 'udpate']]);
         Route::get('requirements', 'RequirementController@index');
+        Route::get('types', 'TypeController@index');
     });
 });
 

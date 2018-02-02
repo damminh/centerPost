@@ -19,8 +19,13 @@ class CreatePostsTable extends Migration
             $table->tinyInteger('user_id');
             $table->integer('requirement_id');
             $table->integer('domain_id');
+            $table->string('title');
             $table->string('content');
-            $table->string('name');
+            $table->integer('category_id');
+            //link to post in website
+            $table->string('link')->nullable();
+            //id in website
+            $table->integer('post_website_id')->nullable();
             $table->text('description')->nullable();
             $table->tinyInteger('is_main');
             $table->timestamps();
