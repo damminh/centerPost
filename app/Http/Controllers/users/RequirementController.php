@@ -55,7 +55,6 @@ class RequirementController extends Controller
             $user = BasicAuth::getInstance()->getModel();
             $ob = new Requirement();
             $ob->user_id = $user->id;
-            $ob->member_id = $request->input('member_id');
             $ob->name = $request->input('name');
             $ob->start_date = new Carbon($request->input('start_date'));
             $ob->end_date = new Carbon($request->input('end_date'));
@@ -113,7 +112,6 @@ class RequirementController extends Controller
         try {
             $user = BasicAuth::getInstance()->getModel();
             $ob = Requirement::find($id);
-            $ob->member_id = $request->input('member_id');
             $ob->name = $request->input('name');
             $ob->start_date = new Carbon($request->input('start_date'));
             $ob->end_date = new Carbon($request->input('end_date'));

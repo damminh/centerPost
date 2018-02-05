@@ -20,7 +20,9 @@ class RequirementController extends Controller
         $member = BasicAuth::getInstance()->getModel();
         $limit = $request->input('limit', null);
         $search_text = $request->input('search', null);
-        $query = Requirement::where('member_id', $member->id)
+        $query = Requirement::whereHas('members', function ($q) use($member) {
+                $q->where('id', $member->id);
+            })
             ->when($search_text, function ($q) use ($search_text) {
                 return $q->where('name', 'like', '%' . $search_text . '%')
                     ->orWhere('name', 'like', '%' . $search_text . '%');
