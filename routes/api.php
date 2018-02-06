@@ -26,6 +26,8 @@ Route::group([
         Route::resource('posts', 'PostController', ['only' => ['index', 'store', 'update', 'destroy']]);
         Route::resource('requirements', 'RequirementController', ['only' => ['index', 'store', 'update', 'destroy']]);
         Route::get('types', 'TypeController@index');
+        Route::get('posts/{id}', 'PostController@index_one');
+        Route::get('requirements/{id}', 'RequirementController@index_one');
     });
 });
 
@@ -39,6 +41,8 @@ Route::group([
         Route::resource('posts', 'PostController', ['only' => ['index', 'store', 'udpate']]);
         Route::get('requirements', 'RequirementController@index');
         Route::get('types', 'TypeController@index');
+        Route::get('posts/{id}', 'PostController@index_one');
+        Route::get('requirements/{id}', 'RequirementController@index_one');
     });
 });
 

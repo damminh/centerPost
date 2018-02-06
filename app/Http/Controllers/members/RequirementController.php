@@ -35,6 +35,12 @@ class RequirementController extends Controller
         return response()->json($data, 200);
     }
 
+    public function index_one(Request $request, $id) {
+        $member = BasicAuth::getInstance()->getModel();
+        $data = Requirement::where('id', $id)->where('member_id', $member->id)->first();
+        return response()->json($data, 200);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
