@@ -22,4 +22,5 @@ class Domain extends Model
     public function member() {
         return $this->belongsTo('App\Models\Member', 'member_id');
     }
+
 }

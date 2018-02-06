@@ -37,7 +37,8 @@ class RequirementController extends Controller
 
     public function index_one(Request $request, $id) {
         $member = BasicAuth::getInstance()->getModel();
-        $data = Requirement::where('id', $id)->where('member_id', $member->id)->first();
+        $data = Requirement::where('id', $id)->where('member_id', $member->id)
+                ->with('posts','posts.member')->first();
         return response()->json($data, 200);
     }
 

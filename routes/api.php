@@ -28,6 +28,7 @@ Route::group([
         Route::get('types', 'TypeController@index');
         Route::get('posts/{id}', 'PostController@index_one');
         Route::get('requirements/{id}', 'RequirementController@index_one');
+        Route::get('reports', 'DashBoardController@report');
     });
 });
 

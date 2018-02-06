@@ -65,67 +65,81 @@ class PostController extends Controller
     {
         try {
             $member = BasicAuth::getInstance()->getModel();
-            $ob = new Post();
-            $ob->member_id = $member->id;
-            $ob->user_id = $member->member_id;
-            $ob->requirement_id = $request->input('requirement_id');
-            // $ob_requirement = Requirement::find($request->input('requirement_id'));
-            $domain_id = $request->input('domain_id');
-            $ob->domain_id = $domain_id;
+            $requirement_id = $request->input('requirement_id');
             $title = $request->input('title');
             $content = $request->input('content');
-            $category_id = $request->input('category_id');
-
-            $ob->title = $title;
-            $ob->content = $content;
-            $ob->category_id = $category_id;
-            $ob->description = $request->input('description', null);
+            $description = $request->input('description', null);
             $is_main = $request->input('is_main');
-            $ob->is_main = $is_main;
-            // create post in website
-            if((int)$is_main == 1) {
-                $curl = new Curl();
-                $ob_domain = Domain::find($domain_id)->with('type');
-                //website is wordpress
-                if($ob_domain['type']['id']==1) {
-                    //get token from wordpress
-                    $data_token = $curl->post($ob_domain['url'].'/wp-json/jwt-auth/v1/token', array(
-                        "username" => $ob_domain['username'],
-                        "password" => $ob_domain['password']
-                    ));
-                    //get data from wordpress
-                    $curl_ = new Curl();
-                    $curl_->setHeader('Content-Type', 'application/json');
-                    $curl_->setHeader('Authorization', 'Bearer '.$data_token->token);
-                    $data = $curl_->post($ob_domain['url'].'/wp-json/wp/v2/posts', array(
-                        "title" => $title,
-                        "content" => $content,
-                        "categories" => $category_id,
-                        "status" => "publish"
-                    ));
-                    if($curl_->error) {
-                        return response()->json([
-                            'message' => 'error from website'
-                        ], 500);
-                    }
-                    else {
-                        $ob->post_website_id = $data->id;
-                        $ob->link = $data->link;
-                        $ob->save();
-                        return response()->json([
-                            'message' => 'success',
-                            'data' => $ob
-                        ], 200);
+            $ob_requirement = Requirement::where('id', $requirement_id)->with('domains')->first();
+            $ob_reponse = [];
+            $count_success = 0;
+            $count_erorr = 0;
+            foreach($ob_requirement['domains'] as $item) {
+                $ob = new Post();
+                $ob->member_id = $member->id;
+                $ob->user_id = $member->user_id;
+                $ob->requirement_id = $requirement_id;
+                $domain_id = $item['id'];
+                $ob->domain_id = $domain_id;
+                $ob->title = $title;
+                $ob->content = $content;
+                $ob->category_id = 0;
+                $ob->description = $description;
+                $ob->is_main = $is_main;
+                // create post in website
+                if((int)$is_main == 1) {
+                    $curl = new Curl();
+                    $ob_domain = Domain::find($domain_id)->with('type');
+                    //website is wordpress
+                    if($ob_domain['type']['id']==1) {
+                        //get token from wordpress
+                        $data_token = $curl->post($ob_domain['url'].'/wp-json/jwt-auth/v1/token', array(
+                            "username" => $ob_domain['username'],
+                            "password" => $ob_domain['password']
+                        ));
+                        //get data from wordpress
+                        $curl_ = new Curl();
+                        $curl_->setHeader('Content-Type', 'application/json');
+                        $curl_->setHeader('Authorization', 'Bearer '.$data_token->token);
+                        $data = $curl_->post($ob_domain['url'].'/wp-json/wp/v2/posts', array(
+                            "title" => $title,
+                            "content" => $content,
+                            "status" => "publish"
+                        ));
+                        if($curl_->error) {
+                            // return response()->json([
+                            //     'message' => 'error from website'
+                            // ], 500);
+                            $count_erorr++;
+                        }
+                        else {
+                            $ob->post_website_id = $data->id;
+                            $ob->link = $data->link;
+                            $ob->save();
+                            $ob_reponse = $ob;
+                            $count_success++;
+                            // return response()->json([
+                            //     'message' => 'success',
+                            //     'data' => $ob
+                            // ], 200);
+                        }
                     }
                 }
+                else if ((int)$is_main == 0) {
+                    $ob->save();
+                    $ob_reponse = $ob;
+                    $count_success++;
+                    // return response()->json([
+                    //     'message' => 'success',
+                    //     'data' => $ob
+                    // ], 200);
+                }
             }
-            else if ((int)$is_main == 0) {
-                $ob->save();
-                return response()->json([
-                    'message' => 'success',
-                    'data' => $ob
-                ], 200);
-            }
+            return response()->json([
+                'list' => $ob_reponse,
+                'count_success' => $count_success,
+                'count_error' => $count_erorr
+            ], 200);
         }
         catch (\Exception $e) {
             Log::error($e);
