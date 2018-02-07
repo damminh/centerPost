@@ -15,7 +15,7 @@ class RequirementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $member = BasicAuth::getInstance()->getModel();
         $limit = $request->input('limit', null);

@@ -16,7 +16,7 @@ class RequirementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = BasicAuth::getInstance()->getModel();
         $limit = $request->input('limit', null);
@@ -35,7 +35,8 @@ class RequirementController extends Controller
 
     public function index_one(Request $request, $id) {
         $user = BasicAuth::getInstance()->getModel();
-        $data = Requirement::where('id', $id)->where('user_id', $user->id)->first();
+        $data = Requirement::where('id', $id)->with('posts', 'posts.member')
+            ->where('user_id', $user->id)->first();
         return response()->json($data, 200);
     }
 

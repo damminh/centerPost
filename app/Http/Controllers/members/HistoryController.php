@@ -1,23 +1,24 @@
 <?php
 
-namespace App\Http\Controllers\users;
+namespace App\Http\Controllers\members;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Type;
+use App\Models\HistoryPost;
 use App\Utils\BasicAuth;
 
-class TypeController extends Controller
+class HistoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, $id)
     {
         $member = BasicAuth::getInstance()->getModel();
-        $data = Type::get();
+        $data = HistoryPost::where('post_id', $id)
+            ->where('member_id', $member->id)->get();
         return response()->json($data, 200);
     }
 

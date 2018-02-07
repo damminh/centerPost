@@ -18,7 +18,7 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = BasicAuth::getInstance()->getModel();
         $limit = $request->input('limit', null);
@@ -88,7 +88,7 @@ class PostController extends Controller
                 // create post in website
                 if((int)$is_main == 1) {
                     $curl = new Curl();
-                    $ob_domain = Domain::find($domain_id)->with('type');
+                    $ob_domain = Domain::where('id', $domain_id)->with('type')->first();
                     //website is wordpress
                     if($ob_domain['type']['id']==1) {
                         //get token from wordpress
@@ -187,6 +187,7 @@ class PostController extends Controller
             $ob_history->content_old = $ob->content;
             $ob_history->category_old_id = $ob->category_id;
             $ob_history->member_id = 0;
+            $ob_history->is_deleted = 0;
 
             $title = $request->input('title');
             $content = $request->input('content');
@@ -201,7 +202,7 @@ class PostController extends Controller
             // is_main = 1 update to website
             if((int)$ob['is_main'] == 1) {
                 $curl = new Curl();
-                $ob_domain = Domain::find($ob['domain_id'])->with('type');
+                $ob_domain = Domain::where('id', $domain_id)->with('type')->first();
                 //website is wordpress
                 if($ob_domain['type']['id']==1) {
                     //get token from wordpress
@@ -259,7 +260,7 @@ class PostController extends Controller
     {
         $ob = Post::find($id);
         $curl = new Curl();
-        $ob_domain = Domain::find($ob['domain_id'])->with('type');
+        $ob_domain = Domain::where('id', $ob['domain_id'])->with('type')->first();
         //website is wordpress
         if($ob_domain['type']['id']==1) {
             //get token from wordpress
@@ -282,9 +283,11 @@ class PostController extends Controller
                 $ob_history = HistoryPost::where("post_id", $ob['id'])->get();
                 foreach($ob_history as $item) {
                     $ob_history_delete = HistoryPost::find($item['id']);
-                    $ob_history_delete->delete();
+                    $ob_history_delete->is_deleted = 1;
+                    $ob_history_delete->save();
                 }
-                $ob->delete();
+                $ob->is_main = 2;
+                $ob->save();
                 return response()->json([
                     'message' => 'success',
                     'data' => $ob

@@ -20,6 +20,7 @@ class CreateHistoryPostsTable extends Migration
             $table->string('title_old');
             $table->string('content_old');
             $table->integer('category_old_id');
+            $table->tinyInteger('is_deleted');
             $table->timestamps();
             $table->softDeletes();
         });

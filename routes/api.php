@@ -29,6 +29,7 @@ Route::group([
         Route::get('posts/{id}', 'PostController@index_one');
         Route::get('requirements/{id}', 'RequirementController@index_one');
         Route::get('reports', 'DashBoardController@report');
+        Route::get('posts/{id}/histories', 'HistoryController@index');
     });
 });
 
@@ -40,10 +41,12 @@ Route::group([
     Route::post('login', 'AuthController@login');
     Route::group(['middleware' => 'api.web:2'], function () {
         Route::resource('posts', 'PostController', ['only' => ['index', 'store', 'udpate']]);
+        Route::get('posts-deleted', 'PostController@index_deleted');
         Route::get('requirements', 'RequirementController@index');
         Route::get('types', 'TypeController@index');
         Route::get('posts/{id}', 'PostController@index_one');
         Route::get('requirements/{id}', 'RequirementController@index_one');
+        Route::get('posts/{id}/histories', 'HistoryController@index');
     });
 });
 

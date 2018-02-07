@@ -27,6 +27,7 @@ class CreatePostsTable extends Migration
             //id in website
             $table->integer('post_website_id')->nullable();
             $table->text('description')->nullable();
+            // 0: draft, 1: main, 2: deleted
             $table->tinyInteger('is_main');
             $table->timestamps();
             $table->softDeletes();

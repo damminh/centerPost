@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Domain;
 use App\Models\HistoryPost;
 use \Curl\Curl;
+use Carbon\Carbon;
 
 class PostController extends Controller
 {
@@ -19,7 +20,7 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $member = BasicAuth::getInstance()->getModel();
         $limit = $request->input('limit', null);
@@ -42,6 +43,18 @@ class PostController extends Controller
     public function index_one(Request $request, $id) {
         $member = BasicAuth::getInstance()->getModel();
         $data = Post::where('id', $id)->where('member_id', $member->id)->first();
+        return response()->json($data, 200);
+    }
+
+    public function index_deleted(Request $request) {
+        $member = BasicAuth::getInstance()->getModel();
+        $from_date = new Carbon($request->input('from_date'));
+        $to_date = new Carbon($request->input('to_date'));
+        $data = Post::where('member_id', $member->id)
+            ->where('is_main', 2)
+            ->whereDate('from_date', '<=', $to_date->toDateTimeString())
+            ->whereDate('to_date', '>=', $from_date->toDateTimeString())
+            ->get();
         return response()->json($data, 200);
     }
 
@@ -89,7 +102,7 @@ class PostController extends Controller
                 // create post in website
                 if((int)$is_main == 1) {
                     $curl = new Curl();
-                    $ob_domain = Domain::find($domain_id)->with('type');
+                    $ob_domain = Domain::where('id', $domain_id)->with('type')->first();
                     //website is wordpress
                     if($ob_domain['type']['id']==1) {
                         //get token from wordpress
@@ -202,7 +215,7 @@ class PostController extends Controller
             // is_main = 1 update to website
             if((int)$ob['is_main'] == 1) {
                 $curl = new Curl();
-                $ob_domain = Domain::find($ob['domain_id'])->with('type');
+                $ob_domain = Domain::where('id', $domain_id)->with('type')->first();
                 //website is wordpress
                 if($ob_domain['type']['id']==1) {
                     //get token from wordpress
